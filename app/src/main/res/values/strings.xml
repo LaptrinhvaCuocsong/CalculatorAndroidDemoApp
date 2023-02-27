@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CalculatorAndroidApp</string>
+    <string name="button_equal">=</string>
+    <string name="button_plus">+</string>
+    <string name="button_minus">-</string>
+    <string name="button_multiply">*</string>
+    <string name="button_divide">/</string>
+    <string name="button_arc">ARC</string>
+    <string name="button_dot">.</string>
+</resources>
