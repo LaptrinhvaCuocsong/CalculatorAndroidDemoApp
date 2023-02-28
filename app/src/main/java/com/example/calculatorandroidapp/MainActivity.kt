@@ -2,6 +2,7 @@ package com.example.calculatorandroidapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -36,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     private var isFirstNumberInputed = false
     private var currentOperator: Operator = Operator.NONE
     private var isNeedInputSecondOperateNumber = false
+    private var isNeedOperate = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +69,8 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupUIComponents() {
         tvInput.text = "0"
+        tvInput.maxLines = 1
+        tvInput.ellipsize = TextUtils.TruncateAt.END
         btnEqual.text = resources.getText(R.string.button_equal)
         btnMinus.text = resources.getText(R.string.button_minus)
         btnMultiply.text = resources.getText(R.string.button_multiply)
@@ -108,20 +112,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickNumber(num: Int) {
         val newCharacter = if (num == -1) { "." } else { num.toString() }
-        val text = tvInput.text.toString() + newCharacter
+        var text = ""
+        text = if (isNeedInputSecondOperateNumber) {
+            newCharacter
+        } else {
+            tvInput.text.toString() + newCharacter
+        }
         try {
             val number = text.toDouble()
+            println("New number = $number")
             if (!isFirstNumberInputed && number > 0) {
                 tvInput.text = number.toInt().toString()
-            } else {
-                tvInput.append(newCharacter)
+                isFirstNumberInputed = true
+            } else if (isFirstNumberInputed) {
+                tvInput.text = tvInput.text.toString() + newCharacter
             }
-            isFirstNumberInputed = true
             if (isNeedInputSecondOperateNumber) {
                 operateNumber2 = number
             } else {
                 operateNumber1 = number
             }
+
+            println("Text view string: ${tvInput.text}")
+
+            isNeedOperate = true
         } catch (e: java.lang.NumberFormatException) {
             println(e.localizedMessage)
         }
@@ -155,10 +169,12 @@ class MainActivity : AppCompatActivity() {
         if (isNeedInputSecondOperateNumber) {
             val isSuccess = operateResult()
             if (isSuccess) {
+                isNeedOperate = false
                 tvInput.text = result.toString()
                 operateNumber1 = result
                 operateNumber2 = 0.0
                 currentOperator = operator
+                isFirstNumberInputed = false
             } else {
                 reset()
                 Toast.makeText(this, "Something error", Toast.LENGTH_LONG)
@@ -171,6 +187,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onClickEqual() {
+        if (isNeedOperate) {
+            operateResult()
+        }
         tvInput.text = result.toString()
     }
 
@@ -185,5 +204,6 @@ class MainActivity : AppCompatActivity() {
         isNeedInputSecondOperateNumber = false
         operateNumber1 = 0.0
         operateNumber2 = 0.0
+        isNeedOperate = true
     }
 }

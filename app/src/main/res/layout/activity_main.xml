@@ -11,12 +11,12 @@
         android:id="@+id/textViewInput"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:text="Hello World!"
         android:background="@color/light_grey"
-        android:gravity="right|bottom"
         android:padding="16dp"
         android:textSize="28sp"
-        android:textStyle="bold"/>
+        android:gravity="bottom|right"
+        android:textStyle="bold"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
